@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\web\PostReportController;
 use App\Http\Controllers\Web\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\PostController;
@@ -24,7 +25,8 @@ Route::get('/', [PostController::class, 'index'])->name('home');
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('posts', PostController::class)->except('index');
     Route::resource('posts/{post}/comments', CommentController::class);
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::resource('posts/{post}/reports', PostReportController::class);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('user.logout');
  });
 
 

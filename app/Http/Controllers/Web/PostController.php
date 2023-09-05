@@ -5,14 +5,21 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\PostRequest;
 use App\Models\Post\Post;
-use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with(['translation'])->get();
+        $keyword = $request->input('keyword');
+
+        $posts = Post::query()
+            ->with('translation')
+            ->search($keyword)
+            ->MostPopular()
+            ->SortByNewest()
+            ->get();
+            //->paginate();
 
         return view('posts.index', compact('posts'));
     }
@@ -20,7 +27,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post->increment('views', 1);
-        $post->with(['translation', 'comments']);
+        $post->with(['translation', 'comments'])->withCount('reports');
 
         return view('posts.show', compact('post'));
     }
@@ -35,9 +42,8 @@ class PostController extends Controller
         $post = Post::create($request->validated() + ['user_id' => auth()->id()]);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('posts', 'public');
+            $post->addMediaFromRequest('image')->toMediaCollection('posts');
         }
-        $post->update(['image' => $imagePath]);
 
         return redirect()->route('home')->with('message', 'created successfully');
     }
@@ -53,12 +59,12 @@ class PostController extends Controller
     public function update(Post $post, PostRequest $request)
     {
         $this->checkAction($post);;
+        $post->update($request->validated());
 
         if ($request->hasFile('image')) {
-          //  Storage::disk('public')->delete($post->image);
-            $imagePath = $request->file('image')->store('posts', 'public');
+            $post->clearMediaCollection('posts');
+            $post->addMediaFromRequest('image')->toMediaCollection('posts');
         }
-        $post->update($request->validated() + ['image' => $imagePath]);
 
         return back()->with('message', 'Updated Successfully');
     }

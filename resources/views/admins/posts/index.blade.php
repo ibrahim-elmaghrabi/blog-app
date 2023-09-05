@@ -37,7 +37,6 @@
                         <h2 class="card-title h4">{{ $post->title }}</h2>
                         <p class="card-text">{{ $post->description }}</p>
                         <a class="btn btn-primary" href="{{ route('posts.show', $post->id) }}">View →</a>
-                        @if($post->user_id == auth()->id() || $post->user->user_type == 'admin')
                         <a class="btn btn-primary" href="{{ route('posts.edit', $post->id) }}">edit →</a>
                         <form id="delete-post-form" method="post" action="{{ route('posts.destroy', $post->id) }}" style="display: inline;">
                             @csrf
@@ -46,12 +45,7 @@
                                 Delete
                             </button>
                         </form>
-                        @endif
-                        @if(auth()->user()?->user_type == 'admin')
                         <a class="btn btn-warning" href="{{ route('reports.index', $post->id) }}">show reports →</a>
-                        @else
-                        <a class="btn btn-warning" href="{{ route('reports.create', $post->id) }}"> Add Report →</a>
-                        @endif
                     </div>
                 </div>
                 @endforeach

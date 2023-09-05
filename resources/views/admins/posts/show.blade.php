@@ -23,7 +23,6 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h2 class="card-title h4">{{ $comment->comment }}</h2>
-                @if($post->user_id == auth()->id() || $post->user?->user_type == 'admin')
                  <a class="btn btn-primary" href="{{ route('comments.edit', [
                     'comment' => $comment->id, 'post' => $post->id]) }}">edit →</a>
                 <form id="delete-post-form" method="post" action="{{ route('comments.destroy',
@@ -34,11 +33,9 @@
                         Delete
                     </button>
                 </form>
-                @endif
             </div>
         </div>
         @endforeach
-
     </div>
 </div>
 @endsection

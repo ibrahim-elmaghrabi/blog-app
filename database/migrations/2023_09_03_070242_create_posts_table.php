@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('image')->nullable();
             $table->integer('views')->default(0);
             $table->integer('is_active')->default(0);
             $table->timestamps();
@@ -25,8 +24,8 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->string('title');
             $table->longText('description');
-            $table->string('local')->index();
-            $table->unique(['post_id', 'local']);
+            $table->string('locale')->index();
+            $table->unique(['post_id', 'locale']);
             $table->timestamps();
         });
     }
@@ -36,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('post_translations');
         Schema::dropIfExists('posts');
     }
 };

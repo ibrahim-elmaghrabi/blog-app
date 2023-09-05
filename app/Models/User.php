@@ -4,18 +4,19 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\{HasMany, BelongsToMany};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Post\Post;
+use Spatie\Permission\Traits\HasRoles;
+use App\Models\Post\{Post, Report};
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
 
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+protected $guarded = ['id', 'created_at', 'updated_at'];
 
 
     protected $hidden = ['password', 'remember_token'];
@@ -31,6 +32,11 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'post_id');
+    }
+
+    public function reports(): BelongsToMany
+    {
+        return $this->belongsToMany(Report::class);
     }
 
 }
