@@ -2,32 +2,38 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\PostRequest;
 use App\Models\Post\Post;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\PostRequest;
+use Illuminate\Support\Facades\Cookie;
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $keyword = $request->input('keyword');
-
         $posts = Post::query()
             ->with('translation')
-            ->search($keyword)
-            ->MostPopular()
-            ->SortByNewest()
-            ->get();
-            //->paginate();
+            ->search($request['keyword'])
+            ->when($request['sort'] === 'newest', function ($query) {
+                return $query->sortByNewest();
+            }, function ($query) {
+            return $query->mostPopular();
+        })->get();
+        //->paginate();
 
         return view('posts.index', compact('posts'));
     }
 
     public function show(Post $post)
     {
-        $post->increment('views', 1);
-        $post->with(['translation', 'comments'])->withCount('reports');
+        if (!Cookie::get("post_{$post->id}")) {
+            Cookie::queue("post_{$post->id}", '1', 60);
+            $post->increment('views', 1);
+        }
+
+        $post->load(['translation', 'comments']);
+        $post->loadCount('reports');
 
         return view('posts.show', compact('post'));
     }
@@ -50,7 +56,6 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        $this->checkAction($post);
         $post->with('translation');
 
         return view('posts.edit', compact('post'));
@@ -58,7 +63,6 @@ class PostController extends Controller
 
     public function update(Post $post, PostRequest $request)
     {
-        $this->checkAction($post);;
         $post->update($request->validated());
 
         if ($request->hasFile('image')) {
@@ -71,21 +75,13 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $this->checkAction($post);
-        if($post?->comments()?->count() > 0)
-        foreach($post as $comment) {
-            $comment->delete();
-        }
+        if ($post?->comments()?->count() > 0)
+            foreach ($post as $comment) {
+                $comment->delete();
+            }
         $post->delete();
 
         return redirect()->route('home')->with('message', 'Deleted Successfully');
     }
 
-    private function checkAction($post)
-    {
-        if($post->user_id != auth()->id())
-        {
-            abort(403);
-        }
-    }
 }

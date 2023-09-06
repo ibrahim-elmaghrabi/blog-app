@@ -29,6 +29,7 @@
                     <a class="btn btn-primary" href="{{ route('posts.create') }}">Add Post →</a>
                     </div>
                 <!-- Blog post-->
+                <div id="resultsContainer">
                 @foreach ($posts as $post)
                 <div class="card mb-4">
                     <img class="card-img-top" src="{{ $post->getFirstMediaUrl('posts') }}" alt="..." />
@@ -55,35 +56,12 @@
                     </div>
                 </div>
                 @endforeach
+                </div>
             </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
-<script>
-    $(document).ready(function() {
-    // Create the form
-    var form = document.getElementById('search-form');
-
-    // Attach an event listener to the submit button
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        // Get the search keyword
-        var keyword = document.getElementById('keyword').value;
-
-        // Make an AJAX request to the server
-        $.ajax({
-            url: '/search',
-            method: 'GET',
-            data: {
-                keyword: keyword
-            }
-        }).done(function(data) {
-            // Update the page with the search results
-            $('#results').html(data);
-        });
-    });
-});
-</script>
+<!-- Include the JavaScript file -->
+<script src="{{ asset('js/search-filter.js') }}"></script>

@@ -46,7 +46,7 @@
                                                          document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
-                                        @if(Auth::guard('web')->check())
+                                        @if(Auth::check())
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
