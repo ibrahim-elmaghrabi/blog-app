@@ -94,4 +94,18 @@ class PostController extends Controller
             echo $posts;
     }
 
+    public function sort(Request $request)
+    {
+        if($request->order_by == 1)
+        {
+         $posts = Post::orderBy('created_at', 'ASC')->get();
+
+        } elseif($request->order_by == 2)
+        {
+         $posts= Post::orderBy('views', 'DESC')->get();
+        }
+
+        return response()->json($posts);
+    }
+
 }

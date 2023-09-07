@@ -22,6 +22,8 @@ Auth::routes();
 
 Route::get('/', [PostController::class, 'index'])->name('home');
 Route::post('/search', [PostController::class, 'search'])->name('ajax_search');
+Route::post('/sort', [PostController::class, 'sort'])->name('ajax_sort');
+
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('posts', PostController::class)->except('index');
     Route::resource('posts.comments', CommentController::class);
