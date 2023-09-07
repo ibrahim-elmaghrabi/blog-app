@@ -9,8 +9,14 @@
             <div class="col-lg-8">
                 <div class="card mb-6">
                     <h2># Admins</h2>
+                    <a class="btn btn-primary" href="{{ route('admin_posts.index') }}">posts →</a>
+                    <br>
                     <a class="btn btn-primary" href="{{ route('admins.create') }}">Add Admin →</a>
+                    <br>
+                    <a class="btn btn-primary" href="{{ route('admin_reports.create') }}">Add report Type →</a>
                     </div>
+                    <br>
+                    <a class="btn btn-primary" href="{{ route('admin_reports.index') }}">Reports Type →</a>
                 <!-- Blog post-->
                 <table class="table">
                     <thead>

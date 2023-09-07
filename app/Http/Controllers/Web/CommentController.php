@@ -40,7 +40,7 @@ class CommentController extends Controller
 
     public function update($post, Comment $comment, CommentRequest $request)
     {
-        $this->checkAccess($comment);
+        //$this->checkAccess($comment);
 
         $comment->update($request->validated());
 
@@ -49,17 +49,17 @@ class CommentController extends Controller
 
     public function destroy($post, Comment $comment)
     {
-        $this->checkAccess($comment);
+        //$this->checkAccess($comment);
         $comment->delete();
 
         return redirect()->route('posts.show', $post)->with('message', 'Deleted Successfully');
     }
 
-    private function checkAccess($comment)
-    {
-        if($comment->user_id != auth()->id()) {
-            abort(403);
-        }
-    }
+    // private function checkAccess($comment)
+    // {
+    //     if($comment->user_id != auth()->id()) {
+    //         abort(403);
+    //     }
+    // }
 
 }

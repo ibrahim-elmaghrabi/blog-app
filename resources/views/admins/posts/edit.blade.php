@@ -3,7 +3,7 @@
 @section('content')
 <div class="card-body">
     <form name="add-blog-post-form" id="add-blog-post-form"
-      method="POST" action="{{ route('posts.update', $post->id) }}" enctype="multipart/form-data">
+      method="POST" action="{{ route('admin_posts.update', [ 'admin_post' => $post->id ]) }}" enctype="multipart/form-data">
      @method('PUT')
       @csrf
      <div class="form-group">
@@ -28,7 +28,7 @@
       </div>
 
       <div class="form-group">
-        <img src="{{ asset('storage/posts'.$post->image) }}">
+        <img src="{{ $post->getFirstMediaUrl('posts') }}">
       </div>
 
       <br>

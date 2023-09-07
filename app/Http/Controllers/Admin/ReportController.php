@@ -2,45 +2,60 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ReportRequest;
 use App\Models\Report\Report;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
-    public function index($post)
+    public function index(Request $request)
     {
-        $reports = Report::whereId($post)->get();
+        $reports = Report::get();
+        //->paginate();
 
-        return view('reports.index', compact('reports'));
+        return view('admins.reports.index', compact('reports'));
     }
 
-    public function create($post)
+    public function show(Report $report)
     {
-        return view('reports.create', compact($post));
+        return view('admins.posts.show', compact('report'));
     }
 
-    public function store($post, ReportRequest $request)
+    public function create()
     {
-        return redirect()->route('reports.index')->with('message', 'created successfully');
+        return view('admins.reports.create');
     }
 
-    public function edit(Report $report)
+    public function store(ReportRequest $request)
     {
-        return view('reports.edit', compact('report'));
+        Report::create($request->validated() + ['added_by_id' => auth()->id()]);
+
+        return redirect()->route('admin_reports.index')->with('message', 'created successfully');
     }
 
-    public function update(Report $report, ReportRequest $request)
+    public function edit($report)
     {
-        $report->update($request->validated());
+        $reported = Report::with('translation')->findOrFail($report);
 
-        return back()->with('message', 'Updated Successfully');
+        return view('admins.reports.edit', ['report' => $reported]);
     }
 
-    public function destroy(Report $report)
+    public function update($report, ReportRequest $request)
     {
-        $report->delete();
+        $reported = Report::findOrFail($report);
 
-        return back()->with('message', 'Deleted Successfully');
+        $reported->update($request->validated());
+
+        return redirect()->route('admin_reports.index')->with('message', 'Updated Successfully');
     }
+
+    public function destroy($report)
+    {
+        $reported = Report::findOrFail($report);
+        $reported->delete();
+
+        return back();
+    }
+
 }

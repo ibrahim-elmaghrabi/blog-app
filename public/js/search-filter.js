@@ -1,6 +1,7 @@
-$(document).ready(function() {
+
+    $(document).ready(function() {
     // Search Form
-    $('#searchForm').submit(function(event) {
+    $('#searchForm').on(function(event) {
         event.preventDefault(); // Prevent default form submission
 
         var formData = $(this).serialize(); // Get form data
@@ -13,6 +14,8 @@ $(document).ready(function() {
             success: function(response) {
                 // Update the results container with the received results
                 $('#resultsContainer').html(response);
+                lazyLoad();
+
             },
             error: function(xhr, status, error) {
                 // Handle error if necessary
@@ -21,7 +24,7 @@ $(document).ready(function() {
     });
 
     // Sort Form
-    $('#sortForm').submit(function(event) {
+    $('#sort').submit(function(event) {
         event.preventDefault(); // Prevent default form submission
 
         var formData = $(this).serialize(); // Get form data
@@ -34,6 +37,8 @@ $(document).ready(function() {
             success: function(response) {
                 // Updatethe results container with the received results
                 $('#resultsContainer').html(response);
+                lazyLoad();
+
             },
             error: function(xhr, status, error) {
                 // Handle error if necessary

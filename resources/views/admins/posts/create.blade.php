@@ -3,7 +3,7 @@
 @section('content')
 <div class="card-body">
     <form name="add-blog-post-form" id="add-blog-post-form"
-      method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+      method="POST" action="{{ route('admin_posts.store') }}" enctype="multipart/form-data">
      @csrf
       <div class="form-group">
         <label for="exampleInputEmail1">Arabic Title</label>

@@ -15,7 +15,7 @@ class PostController extends Controller
         $posts = Post::query()
             ->with('translation')
             ->search($request['keyword'])
-            ->when($request['sort'] === 'newest', function ($query) {
+            ->when($request['sort'] == 'newest', function ($query) {
                 return $query->sortByNewest();
             }, function ($query) {
             return $query->mostPopular();
@@ -27,8 +27,8 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        if (!Cookie::get("post_{$post->id}")) {
-            Cookie::queue("post_{$post->id}", '1', 60);
+        if (!session()->has("post_{$post->id}")) {
+            session()->put("post_{$post->id}", true);
             $post->increment('views', 1);
         }
 

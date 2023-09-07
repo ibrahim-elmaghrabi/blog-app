@@ -28,7 +28,7 @@
       </div>
 
       <div class="form-group">
-        <img src="{{ asset('storage/posts'.$post->image) }}">
+        <img src="{{ $post->getFirstMediaUrl('posts') }}">
       </div>
 
       <br>
