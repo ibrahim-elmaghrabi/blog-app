@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $reports = Report::get();
+        $reports = Report::with('translation')->get();
         //->paginate();
 
         return view('admins.reports.index', compact('reports'));
@@ -19,6 +19,8 @@ class ReportController extends Controller
 
     public function show(Report $report)
     {
+        $report->with('translation');
+        
         return view('admins.posts.show', compact('report'));
     }
 

@@ -13,20 +13,15 @@ class PostController extends Controller
     {
         $posts = Post::query()
             ->with('translation')
-            ->search($request['keyword'])
-            ->when($request['sort'] == 'newest', function ($query) {
-                return $query->sortByNewest();
-            }, function ($query) {
-            return $query->mostPopular();
-        })->get();
-        //->paginate();
+            ->simplePaginate(10);
+
 
         return view('admins.posts.index', compact('posts'));
     }
 
     public function show($post)
     {
-        $posted = Post::findOrFail($post)->with(['translation', 'comments'])->first();
+        $posted = Post::with(['translation', 'comments', 'reports.translation'])->findOrFail($post)->first();
 
         return view('admins.posts.show', ['post' => $posted]);
     }
@@ -34,7 +29,7 @@ class PostController extends Controller
 
     public function edit($post)
     {
-        $posted = Post::findOrFail($post)->with('translation')->first();
+        $posted = Post::with('translation')->findOrFail($post)->first();
 
         return view('admins.posts.edit', ['post' => $posted]);
     }
@@ -54,11 +49,12 @@ class PostController extends Controller
 
     public function destroy($post)
     {
-        $posted = Post::findOrFail($post);
-        if ($posted?->comments()?->count() > 0)
+        $posted = Post::withCount('comments')->findOrFail($post);
+        if ($posted->comments_count > 0)
             foreach ($posted->comments as $comment) {
                 $comment->delete();
             }
+
         $posted->delete();
 
         return back();

@@ -21,11 +21,11 @@ use App\Http\Controllers\Auth\LoginController;
 Auth::routes();
 
 Route::get('/', [PostController::class, 'index'])->name('home');
-
+Route::post('/search', [PostController::class, 'search'])->name('ajax_search');
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('posts', PostController::class)->except('index');
-    Route::resource('posts/{post}/comments', CommentController::class);
-    Route::resource('posts/{post}/reports', ReportController::class)->only(['create', 'store']);
+    Route::resource('posts.comments', CommentController::class);
+    Route::resource('posts.reports', ReportController::class);
     Route::post('/logout', [LoginController::class, 'logout'])->name('user.logout');
  });
 

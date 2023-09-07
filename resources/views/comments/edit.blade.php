@@ -3,7 +3,7 @@
 @section('content')
 <div class="card-body">
     <form name="add-blog-post-form" id="add-blog-post-form"
-      method="POST" action="{{ route('comments.update', ['comment' => $comment, 'post' => $post]) }}" enctype="multipart/form-data">
+      method="POST" action="{{ route('posts.comments.update', ['comment' => $comment, 'post' => $post]) }}" enctype="multipart/form-data">
      @method('PUT')
       @csrf
      <div class="form-group">

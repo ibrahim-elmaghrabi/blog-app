@@ -6,7 +6,7 @@ use App\Models\Post\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\PostRequest;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
@@ -15,25 +15,23 @@ class PostController extends Controller
         $posts = Post::query()
             ->with('translation')
             ->search($request['keyword'])
-            ->when($request['sort'] == 'newest', function ($query) {
-                return $query->sortByNewest();
-            }, function ($query) {
-            return $query->mostPopular();
-        })->get();
-        //->paginate();
+            ->latest()
+            ->simplePaginate(10);
 
         return view('posts.index', compact('posts'));
     }
 
+
     public function show(Post $post)
     {
-        if (!session()->has("post_{$post->id}")) {
-            session()->put("post_{$post->id}", true);
-            $post->increment('views', 1);
-        }
-
         $post->load(['translation', 'comments']);
-        $post->loadCount('reports');
+
+        $userIdentifier = md5(request()->ip() . request()->header('User-Agent'));
+
+        if (!Cache::has('postView:'.$post->id.':'.$userIdentifier)) {
+            $post->increment('views');
+            Cache::put('postView:'.$post->id.':'.$userIdentifier, true, 60);
+        }
 
         return view('posts.show', compact('post'));
     }
@@ -75,13 +73,25 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if ($post?->comments()?->count() > 0)
-            foreach ($post as $comment) {
+        $post->withCount('comments');
+
+        if ($post->comments_count  > 0 )
+            foreach ($post->comments as $comment) {
                 $comment->delete();
             }
+
         $post->delete();
 
         return redirect()->route('home')->with('message', 'Deleted Successfully');
+    }
+
+    public function search(Request $request)
+    {
+            $keyword = $request->searchPost;
+            $posts = Post::with('translation')->Search($keyword)->get();
+
+            // return view('posts.index', compact('posts'));
+            echo $posts;
     }
 
 }

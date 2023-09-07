@@ -9,7 +9,7 @@ class ReportController extends Controller
 {
     public function index($post)
     {
-        $reports = Post::whereId($post)->reports();
+        $reports = Post::whereId($post)->reports()->get();
 
         return view('reports.index', compact('reports'));
     }

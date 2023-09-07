@@ -11,7 +11,9 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = User::where('user_type', UserType::ADMIN->value)->get();
+        $admins = User::query()
+            ->where('user_type', UserType::ADMIN->value)
+            ->simplePaginate(10);
 
         return view('admins.index', compact('admins'));
     }
@@ -23,7 +25,7 @@ class AdminController extends Controller
 
     public function store(AdminRequest $request)
     {
-        User::create($request->validated() + ['user_type' => UserType::ADMIN->value ]);
+        User::create($request->validated() + ['user_type' => UserType::ADMIN->value]);
 
         return redirect()->route('admins.index');
     }

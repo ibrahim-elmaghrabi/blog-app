@@ -11,7 +11,7 @@ class CommentController extends Controller
 {
     public function index(Post $post)
     {
-        $comments = comment::where('post_id', $post->id)->paginate()->latest(10);
+        $comments = comment::where('post_id', $post->id)->simplePaginate(10);
 
         return view('posts.show', compact('comments'));
     }
@@ -33,14 +33,11 @@ class CommentController extends Controller
 
     public function edit($post, Comment $comment)
     {
-        $this->checkAccess($comment);
-
         return view('comments.edit', compact(['comment', 'post']));
     }
 
     public function update($post, Comment $comment, CommentRequest $request)
     {
-        //$this->checkAccess($comment);
 
         $comment->update($request->validated());
 
@@ -49,17 +46,11 @@ class CommentController extends Controller
 
     public function destroy($post, Comment $comment)
     {
-        //$this->checkAccess($comment);
         $comment->delete();
 
         return redirect()->route('posts.show', $post)->with('message', 'Deleted Successfully');
     }
 
-    // private function checkAccess($comment)
-    // {
-    //     if($comment->user_id != auth()->id()) {
-    //         abort(403);
-    //     }
-    // }
+
 
 }

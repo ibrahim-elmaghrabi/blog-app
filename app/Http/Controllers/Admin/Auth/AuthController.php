@@ -21,8 +21,8 @@ class AuthController extends Controller
         $guard = 'admin';
 
         $admin = User::where('email', $credentials['email'])
-        ->where('user_type', UserType::ADMIN)
-        ->first();
+            ->where('user_type', UserType::ADMIN)
+            ->first();
 
         if (!$admin) {
             return back()->withErrors(['email' => 'Invalid credentials']);
@@ -46,7 +46,3 @@ class AuthController extends Controller
         return redirect()->route('admin.login');
     }
 }
-
-
-
-
