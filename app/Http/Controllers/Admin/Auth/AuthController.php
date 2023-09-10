@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Models\User;
 use App\Enums\UserType;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Admin\LoginRequest;
@@ -11,6 +12,10 @@ use App\Http\Requests\Admin\LoginRequest;
 class AuthController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('guest:admin');
+    }
 
     public function adminLogin()
     {
@@ -21,7 +26,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (Auth::attempt($credentials , true)) {
+        if (Auth::guard('admin')->attempt($credentials , true)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('admins.index'));
@@ -32,10 +37,11 @@ class AuthController extends Controller
 
 
 
-    public function logout()
+    public function logout(Request $request)
     {
         auth()->guard('admin')->logout();
-
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('admin.login');
     }
 }

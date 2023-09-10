@@ -53,7 +53,7 @@
                                              {{ __('Logout') }}
                                          </a>
                                          @if (Auth::check())
-                                             <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                             <form id="logout-form" action="{{ route('user.logout') }}" method="POST"
                                                  class="d-none">
                                                  @csrf
                                              </form>
