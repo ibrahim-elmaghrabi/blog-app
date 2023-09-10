@@ -21,8 +21,8 @@ use App\Http\Controllers\Auth\LoginController;
 Auth::routes();
 
 Route::get('/', [PostController::class, 'index'])->name('home');
-Route::post('/search', [PostController::class, 'search'])->name('ajax_search');
-Route::post('/sort', [PostController::class, 'sort'])->name('ajax_sort');
+Route::get('/search', [PostController::class, 'search'])->name('search');
+Route::get('/sort', [PostController::class, 'sort'])->name('sort');
 
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('posts', PostController::class)->except('index');

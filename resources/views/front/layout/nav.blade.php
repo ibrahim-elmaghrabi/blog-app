@@ -52,14 +52,14 @@
                                                          document.getElementById('logout-form').submit();">
                                              {{ __('Logout') }}
                                          </a>
-                                         @if (Auth::check())
-                                             <form id="logout-form" action="{{ route('user.logout') }}" method="POST"
+                                         @if (Auth::guard('admin')->check())
+                                             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
                                                  class="d-none">
                                                  @csrf
                                              </form>
-                                         @endif
-                                         @if (Auth::guard('admin')->check())
-                                             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+
+                                         @else
+                                             <form id="logout-form" action="{{ route('user.logout') }}" method="POST"
                                                  class="d-none">
                                                  @csrf
                                              </form>

@@ -12,10 +12,10 @@ use App\Http\Requests\Admin\LoginRequest;
 class AuthController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('guest:admin');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('guest:admin');
+    // }
 
     public function adminLogin()
     {
@@ -39,6 +39,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::logout();
         auth()->guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
