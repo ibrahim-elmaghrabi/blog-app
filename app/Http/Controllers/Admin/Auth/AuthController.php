@@ -9,6 +9,10 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    protected $redirectTo = '/admin';
+
+    protected $guard = 'admin';
+
     public function adminLogin()
     {
         return view('admins.login');

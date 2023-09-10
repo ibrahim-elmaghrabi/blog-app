@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('report_id')->constrained('reports')->cascadeOnDelete();
             $table->string('reason');
             $table->string('locale')->index();
-            $table->unique(['reason', 'locale']);
+            $table->unique(['report_id', 'locale']);
             $table->timestamps();
         });
     }

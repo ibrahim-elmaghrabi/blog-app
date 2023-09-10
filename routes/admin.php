@@ -22,14 +22,14 @@ Auth::routes();
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('login', [AuthController::class, 'adminLogin'])->middleware('guest:admin');
+    Route::get('login', [AuthController::class, 'adminLogin']);
     Route::post('login', [AuthController::class, 'login'])->name('admin.login');
 
     Route::group(['middleware' => ['auth:admin']], function () {
         Route::resource('/admins', AdminController::class);
         Route::resource('/admin_posts', PostController::class);
         Route::resource('/admin_reports', ReportController::class);
-        Route::post('admin_logout', [AuthController::class, 'logout'])->name('admin.logout');
+        Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
     });
 
 
