@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
+use App\Models\User;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Admin\LoginRequest;
-use App\Models\User;
 
 class AuthController extends Controller
 {
-    protected $redirectTo = '/admin';
 
-    protected $guard = 'admin';
 
     public function adminLogin()
     {
@@ -22,20 +21,10 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        $guard = 'admin';
+        if (Auth::attempt($credentials , true)) {
+            $request->session()->regenerate();
 
-        $admin = User::where('email', $credentials['email'])
-            ->where('user_type', UserType::ADMIN)
-            ->first();
-
-        if (!$admin) {
-            return back()->withErrors(['email' => 'Invalid credentials']);
-        }
-
-        $adminLogin = auth()->guard($guard)->attempt($credentials);
-
-        if ($adminLogin) {
-            return redirect()->route('admins.index');
+            return redirect()->intended(route('admins.index'));
         }
 
         return back()->withErrors(['password' => 'Invalid password']);

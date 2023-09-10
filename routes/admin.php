@@ -18,14 +18,12 @@ use App\Http\Controllers\Admin\Auth\AuthController;
 */
 
 
-Auth::routes();
-
 Route::prefix('admin')->group(function () {
 
     Route::get('login', [AuthController::class, 'adminLogin']);
     Route::post('login', [AuthController::class, 'login'])->name('admin.login');
 
-    Route::group(['middleware' => ['auth:admin']], function () {
+    Route::group(['middleware' => ['admin']], function () {
         Route::resource('/admins', AdminController::class);
         Route::resource('/admin_posts', PostController::class);
         Route::resource('/admin_reports', ReportController::class);
