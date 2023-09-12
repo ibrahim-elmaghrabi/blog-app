@@ -12,50 +12,42 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         $reports = Report::with('translation')->get();
-        //->paginate();
 
-        return view('admins.reports.index', compact('reports'));
-    }
 
-    public function show(Report $report)
-    {
-        $report->with('translation');
-        
-        return view('admins.posts.show', compact('report'));
+        return view('admin.reports.index', compact('reports'));
     }
 
     public function create()
     {
-        return view('admins.reports.create');
+        return view('admin.reports.create');
     }
 
     public function store(ReportRequest $request)
     {
-        Report::create($request->validated() + ['added_by_id' => auth()->id()]);
+        Report::create($request->validated() + ['added_by_id' => 1]);
+        //auth()->id()]);
 
         return redirect()->route('admin_reports.index')->with('message', 'created successfully');
     }
 
-    public function edit($report)
+    public function edit(Report $admin_report)
     {
-        $reported = Report::with('translation')->findOrFail($report);
+        $admin_report->with('translation');
 
-        return view('admins.reports.edit', ['report' => $reported]);
+        return view('admin.reports.edit', ['report' => $admin_report]);
     }
 
-    public function update($report, ReportRequest $request)
+    public function update(Report $admin_report, ReportRequest $request)
     {
-        $reported = Report::findOrFail($report);
-
-        $reported->update($request->validated());
+        $admin_report->update($request->validated());
 
         return redirect()->route('admin_reports.index')->with('message', 'Updated Successfully');
     }
 
-    public function destroy($report)
+    public function destroy(Report $admin_report)
     {
-        $reported = Report::findOrFail($report);
-        $reported->delete();
+
+        $admin_report->delete();
 
         return back();
     }

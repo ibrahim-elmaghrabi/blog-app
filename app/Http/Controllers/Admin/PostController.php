@@ -16,22 +16,14 @@ class PostController extends Controller
             ->simplePaginate(10);
 
 
-        return view('admins.posts.index', compact('posts'));
+        return view('admin.posts.index', compact('posts'));
     }
 
-    public function show($post)
+    public function edit(Post $admin_post)
     {
-        $posted = Post::with(['translation', 'comments', 'reports.translation'])->findOrFail($post)->first();
+        $admin_post->with('translation');
 
-        return view('admins.posts.show', ['post' => $posted]);
-    }
-
-
-    public function edit($post)
-    {
-        $posted = Post::with('translation')->findOrFail($post)->first();
-
-        return view('admins.posts.edit', ['post' => $posted]);
+        return view('admin.posts.edit' , ['post' => $admin_post]);
     }
 
     public function update($post, PostRequest $request)
@@ -40,8 +32,8 @@ class PostController extends Controller
         $posted->update($request->validated());
 
         if ($request->hasFile('image')) {
-            $post->clearMediaCollection('posts');
-            $post->addMediaFromRequest('image')->toMediaCollection('posts');
+            $posted->clearMediaCollection('posts');
+            $posted->addMediaFromRequest('image')->toMediaCollection('posts');
         }
 
         return redirect()->route('admin_posts.index')->with('message', 'Updated Successfully');
@@ -59,5 +51,32 @@ class PostController extends Controller
 
         return back();
     }
+
+    public function showComments(Post $post)
+    {
+        $post->with('comments');
+
+        return view('admin.posts.comment' , compact('post'));
+
+    }
+
+    public function showReports(Post $post)
+    {
+        $post->with('reports');
+
+        return view('admin.posts.report' , compact('post'));
+
+    }
+
+    public function updateStatus(Post $post, $status)
+    {
+        $updated = $post->update([
+            'is_active' => $status
+        ]);
+        if ($updated) {
+            return back()->with('status', 'Status Updated Successfully');
+        }
+    }
+
 
 }

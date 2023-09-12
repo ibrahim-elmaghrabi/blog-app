@@ -14,14 +14,6 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::with('user')
-        ->selectRaw('COUNT(*) as total')
-         ->selectRaw('SUM(CASE WHEN active = 1 THEN 1 ELSE 0 END) as activePosts')
-         ->selectRaw('SUM(CASE WHEN active = 0 THEN 1 ELSE 0 END) as inactivePosts')
-         ->selectRaw('SUM(CASE WHEN active = 1 AND user_type = user THEN 1 ELSE 0 END) as activeUserPosts', [UserType::USER->value])
-         ->first();
-        dd($posts->total);
-
         $posts = Post:: query()
             ->with('translation')
             ->when($request->get('sort') == 'popular', function($q) {

@@ -11,28 +11,29 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = User::query()
-            ->where('user_type', UserType::ADMIN->value)
-            ->simplePaginate(10);
+        $admins = User::query()->where('user_type', UserType::ADMIN->value)->get();
 
-        return view('admins.index', compact('admins'));
+
+        return view('admin.admins.index', compact('admins'));
     }
 
     public function create()
     {
-        return view('admins.create');
+        return view('admin.admins.create');
     }
 
     public function store(AdminRequest $request)
     {
+
         User::create($request->validated() + ['user_type' => UserType::ADMIN->value]);
 
         return redirect()->route('admins.index');
     }
 
-    public function destroy($admin)
+    public function destroy(User $admin)
     {
-        User::whereId($admin)->delete();
+
+        $admin->delete();
 
         return back();
     }
